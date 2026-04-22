@@ -1,0 +1,19 @@
+{
+  "name": "chainsecure-blockchain",
+  "version": "1.0.0",
+  "description": "ChainSecure Smart Contracts",
+  "scripts": {
+    "deploy": "node deploy.js",
+    "compile": "truffle compile",
+    "migrate": "truffle migrate --reset",
+    "migrate:dev": "truffle migrate --network development --reset",
+    "test": "truffle test"
+  },
+  "dependencies": {
+    "@truffle/hdwallet-provider": "^2.1.15",
+    "dotenv": "^16.3.1",
+    "ethers": "^6.9.0",
+    "solc": "^0.8.19",
+    "truffle": "^5.11.5"
+  }
+}

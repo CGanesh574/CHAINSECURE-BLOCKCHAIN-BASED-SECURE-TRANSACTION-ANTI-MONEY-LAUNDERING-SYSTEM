@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test MetaMask Connection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>🦊 Test MetaMask Connection</h1>
+    
+    <div>
+        <p><strong>MetaMask Status:</strong> <span id="status">Checking...</span></p>
+        <button id="connectBtn" onclick="connectWallet()">Connect MetaMask</button>
+    </div>
+    
+    <div id="result" class="result" style="display: none;"></div>
+
+    <script>
+        // Check if MetaMask is installed
+        function checkMetaMask() {
+            const statusEl = document.getElementById('status');
+            if (typeof window.ethereum !== 'undefined') {
+                console.log('MetaMask detected!');
+                console.log('ethereum object:', window.ethereum);
+                console.log('isMetaMask:', window.ethereum.isMetaMask);
+                statusEl.innerHTML = '<span class="success">✅ Installed</span>';
+                return true;
+            } else {
+                statusEl.innerHTML = '<span class="error">❌ Not Installed</span>';
+                return false;
+            }
+        }
+
+        // Connect wallet
+        async function connectWallet() {
+            const resultEl = document.getElementById('result');
+            const btn = document.getElementById('connectBtn');
+            
+            resultEl.style.display = 'block';
+            resultEl.innerHTML = 'Requesting connection...';
+            btn.disabled = true;
+
+            try {
+                if (!window.ethereum) {
+                    throw new Error('MetaMask is not installed');
+                }
+
+                console.log('Requesting accounts...');
+                
+                // This should trigger MetaMask popup
+                const accounts = await window.ethereum.request({ 
+                    method: 'eth_requestAccounts' 
+                });
+                
+                console.log('Accounts:', accounts);
+
+                resultEl.innerHTML = `
+                    <div class="success">
+                        <h3>✅ Connected Successfully!</h3>
+                        <p><strong>Account:</strong> ${accounts[0]}</p>
+                        <p><strong>Number of accounts:</strong> ${accounts.length}</p>
+                    </div>
+                `;
+
+                // Get balance
+                const balance = await window.ethereum.request({
+                    method: 'eth_getBalance',
+                    params: [accounts[0], 'latest']
+                });
+                
+                const balanceInEth = parseInt(balance, 16) / Math.pow(10, 18);
+                resultEl.innerHTML += `<p><strong>Balance:</strong> ${balanceInEth.toFixed(4)} ETH</p>`;
+
+            } catch (error) {
+                console.error('Error:', error);
+                resultEl.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Connection Failed</h3>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p><strong>Code:</strong> ${error.code || 'N/A'}</p>
+                    </div>
+                `;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // Check on page load
+        window.addEventListener('load', () => {
+            checkMetaMask();
+        });
+    </script>
+</body>
+</html>

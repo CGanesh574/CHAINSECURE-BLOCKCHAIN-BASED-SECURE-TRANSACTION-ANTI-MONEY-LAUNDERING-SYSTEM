@@ -1,0 +1,59 @@
+.modal-content form {
+  margin-top: 20px;
+}
+
+.input-disabled {
+  background: #f0f0f0;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.input-group small {
+  display: block;
+  margin-top: 5px;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  margin-top: 30px;
+}
+
+.qr-scan-info {
+  background: #e8f5e9;
+  border: 1px solid #4CAF50;
+  border-left: 4px solid #4CAF50;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+.tx-status {
+  background: #e7f3ff;
+  border: 1px solid #2196f3;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 600;
+  color: #0c5aa6;
+}
+
+.modal-note {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+  font-size: 0.9rem;
+}
+
+.modal-note strong {
+  color: #856404;
+}

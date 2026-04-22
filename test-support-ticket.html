@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Support Ticket Creation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4f46e5;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Support Ticket Creation</h1>
+    
+    <div class="form-group">
+        <label for="token">JWT Token (from localStorage):</label>
+        <input type="text" id="token" placeholder="Paste your token here">
+        <button onclick="getTokenFromStorage()" style="margin-top: 5px;">Get from localStorage</button>
+    </div>
+
+    <div class="form-group">
+        <label for="category">Category:</label>
+        <select id="category">
+            <option value="KYC_VERIFICATION">KYC Verification</option>
+            <option value="ACCOUNT_BLOCKING">Account Blocking</option>
+            <option value="TRANSACTION_ISSUE">Transaction Issue</option>
+            <option value="OTHER">Other</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" value="Test Support Ticket">
+    </div>
+
+    <div class="form-group">
+        <label for="message">Message:</label>
+        <textarea id="message" rows="4">This is a test ticket to verify the support system.</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="files">Documents (optional):</label>
+        <input type="file" id="files" multiple accept="image/jpeg,image/png,application/pdf">
+    </div>
+
+    <button onclick="createTicket()">Create Ticket</button>
+
+    <div id="result"></div>
+
+    <script>
+        function getTokenFromStorage() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                document.getElementById('token').value = token;
+                showResult('Token loaded from localStorage', 'success');
+            } else {
+                showResult('No token found in localStorage', 'error');
+            }
+        }
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = type;
+            resultDiv.innerHTML = message;
+        }
+
+        async function createTicket() {
+            const token = document.getElementById('token').value;
+            const category = document.getElementById('category').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            const filesInput = document.getElementById('files');
+
+            if (!token) {
+                showResult('Please provide a JWT token', 'error');
+                return;
+            }
+
+            if (!category || !subject || !message) {
+                showResult('Please fill in all required fields', 'error');
+                return;
+            }
+
+            try {
+                showResult('Creating ticket...', 'info');
+
+                const formData = new FormData();
+                formData.append('category', category);
+                formData.append('subject', subject);
+                formData.append('message', message);
+
+                if (filesInput.files.length > 0) {
+                    for (let i = 0; i < filesInput.files.length; i++) {
+                        formData.append('documents', filesInput.files[i]);
+                    }
+                }
+
+                console.log('📤 Sending request to: http://localhost:5000/api/support/create');
+                console.log('   Category:', category);
+                console.log('   Subject:', subject);
+                console.log('   Files:', filesInput.files.length);
+
+                const response = await fetch('http://localhost:5000/api/support/create', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                console.log('📥 Response status:', response.status);
+                const data = await response.json();
+                console.log('📥 Response data:', data);
+
+                if (data.success) {
+                    showResult(`
+                        <strong>✅ Ticket Created Successfully!</strong><br><br>
+                        <strong>Ticket ID:</strong> ${data.ticket.ticketId}<br>
+                        <strong>Category:</strong> ${data.ticket.category}<br>
+                        <strong>Subject:</strong> ${data.ticket.subject}<br>
+                        <strong>Status:</strong> ${data.ticket.status}<br>
+                        <strong>Created:</strong> ${new Date(data.ticket.createdAt).toLocaleString()}<br><br>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `, 'success');
+                } else {
+                    showResult(`
+                        <strong>❌ Failed to Create Ticket</strong><br><br>
+                        ${data.message}<br><br>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `, 'error');
+                }
+            } catch (error) {
+                console.error('❌ Error:', error);
+                showResult(`
+                    <strong>❌ Error Creating Ticket</strong><br><br>
+                    ${error.message}<br><br>
+                    <pre>${error.stack}</pre>
+                `, 'error');
+            }
+        }
+
+        // Auto-load token on page load
+        window.onload = function() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                document.getElementById('token').value = token;
+            }
+        };
+    </script>
+</body>
+</html>

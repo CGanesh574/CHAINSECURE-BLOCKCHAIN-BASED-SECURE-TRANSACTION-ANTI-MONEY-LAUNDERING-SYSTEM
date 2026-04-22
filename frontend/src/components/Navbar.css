@@ -1,0 +1,121 @@
+.navbar {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 0;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #667eea;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+  transform: scale(1.05);
+}
+
+.brand-logo {
+  width: 36px;
+  height: 36px;
+  transition: transform 0.3s ease;
+}
+
+.brand-logo-img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  border-radius: 12px;
+}
+
+.navbar-brand:hover .brand-logo {
+  transform: rotate(10deg);
+}
+
+.navbar-brand:hover .brand-logo-img {
+  transform: scale(1.1);
+}
+
+.brand-text {
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brand-icon {
+  font-size: 2rem;
+}
+
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.navbar-link {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 6px;
+}
+
+.navbar-link:hover {
+  color: #667eea;
+}
+
+.navbar-link-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white !important;
+}
+
+.navbar-link-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.navbar-link-danger {
+  background: #dc3545;
+  color: white !important;
+}
+
+.navbar-link-danger:hover {
+  background: #c82333;
+}
+
+@media (max-width: 768px) {
+  .navbar-menu {
+    gap: 15px;
+  }
+
+  .navbar-link {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+  }
+
+  .navbar-brand {
+    font-size: 1.5rem;
+  }
+}

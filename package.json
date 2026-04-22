@@ -1,0 +1,19 @@
+{
+  "name": "chainsecure",
+  "version": "1.0.0",
+  "description": "Blockchain-Based Secure Transaction System",
+  "main": "index.js",
+  "scripts": {
+    "install-all": "cd backend && npm install && cd ../frontend && npm install",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm start",
+    "deploy-contract": "cd blockchain && node deploy.js"
+  },
+  "keywords": ["blockchain", "ethereum", "web3", "secure-transactions"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
